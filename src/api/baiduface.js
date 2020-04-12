@@ -29,7 +29,7 @@ export function  faceVerify(faceData, baiduToken) {
 }
 
 //人脸注册
-export function faceAdd(faceData, baiduToken,groupId,userId) {
+export function faceAdd(faceData, baiduToken,groupId,userId,userInfo) {
   return baiduServer({
     url: '/faceset/user/add?access_token=' + baiduToken,
     method: 'post',
@@ -39,6 +39,7 @@ export function faceAdd(faceData, baiduToken,groupId,userId) {
         "image_type": "BASE64", //图片形式
         "group_id":groupId,
         "user_id": userId,
+        "user_info": userInfo
       }
   })
 }

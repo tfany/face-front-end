@@ -1,10 +1,8 @@
 <template>
   <div>
-
-
     <Row>
       <Col span="4">
-        <Menu theme="light">
+        <Menu theme="light" @on-select="selectOne">
           <Submenu name="1">
             <template slot="title">
               <Icon type="ios-paper"/>
@@ -24,22 +22,44 @@
         </Menu>
       </Col>
       <Col span="20">
-        <AddUser></AddUser>
+        <AddUser :groupId="groupId" v-show="flags[0]"></AddUser>
+        <DeleteUser :groupId="groupId" v-show="flags[1]"></DeleteUser>
+        <AddUser :groupId="groupId" v-show="flags[2]"></AddUser>
+        <DeleteUser :groupId="groupId" v-show="flags[3]"></DeleteUser>
       </Col>
     </Row>
   </div>
 </template>
 <script>
   import AddUser from "./AddUser";
-
+  import DeleteUser from "./DeleteUser";
   export default {
     name: "Home",
     components:{
+      DeleteUser,
       AddUser: AddUser
     },
     data() {
       return {
-
+        groupId: '',
+        flags: [false,false,false,false]
+      }
+    },
+    methods:{
+      selectOne(name){
+        if(name==='1-1'){
+          this.groupId="customer"
+          this.flags=[true,false,false,false]
+        }else if(name==='1-2'){
+          this.groupId="customer"
+          this.flags=[false,true,false,false]
+        }else if(name==='2-1'){
+          this.groupId="fixer"
+          this.flags=[false,false,true,false]
+        }else if(name==='2-2'){
+          this.groupId="fixer"
+          this.flags=[false,false,false,true]
+        }
       }
     }
   }

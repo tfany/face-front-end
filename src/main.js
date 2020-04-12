@@ -5,7 +5,8 @@ import App from './App'
 import router from './router'
 import ViewUI from 'view-design';
 import 'view-design/dist/styles/iview.css';
-
+import VueCookies from 'vue-cookies'
+Vue.use(VueCookies)
 Vue.use(ViewUI);
 
 Vue.config.productionTip = false

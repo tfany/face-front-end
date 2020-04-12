@@ -4,7 +4,7 @@
 
       <div style="background:#eee;padding: 20px">
         <Card :bordered="false">
-          <p slot="title">填写用户信息</p>
+          <p slot="title">{{getTitle()}}</p>
           <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">
             <FormItem label="姓名" prop="name">
               <Input v-model="formValidate.name" placeholder="请输入姓名"></Input>
@@ -16,6 +16,8 @@
           <div class="upload" v-if="!imgUrl">
             <Upload
               type="drag"
+              :format="['jpg','jpeg','png']"
+              accept="image/png,image/jpeg,image/jpg"
               :before-upload="handlePreview"
               action="null">
               <div style="padding: 20px 0">
@@ -25,7 +27,7 @@
             </Upload>
           </div>
           <div v-else>
-            <img :src="imgUrl">
+            <img class="previewImg" :src="imgUrl">
           </div>
 
           <Button type="primary" @click="handleSubmit('formValidate')">提交</Button>
@@ -43,8 +45,15 @@
 
 <script>
   import {validatePhone} from "../../utils/validate";
+  import {faceAdd} from "../../api/baiduface";
+  import {getBaiduToken} from "../../api/getToken";
+  import {getUserId} from "../../utils/common";
+  import {addUser} from "../../api/user";
 
   export default {
+    props: {
+      groupId: String
+    },
     data() {
       return {
         name: "AddUser",
@@ -68,7 +77,33 @@
       handleSubmit(name) {
         this.$refs[name].validate((valid) => {
           if (valid && this.base64File != null) {
-            this.$Message.success('提交成功!');
+            getBaiduToken().then(baiduToken => {
+              console.log("userInfo")
+              let uid = getUserId();
+              //百度云人脸注册
+              faceAdd(this.base64File,
+                baiduToken.data.data,
+                this.groupId,
+                uid,
+                this.formValidate.name
+                + this.formValidate.phone
+              ).then(res => {
+                let data=res.data;
+                if (data.error_code===222202){
+                  this.$Message.error('上传照片中不含人脸');
+                  this.imgUrl=''
+                }
+                else{
+                  //数据库也要写入相应的信息
+                  addUser(uid,this.formValidate.name,this.formValidate.phone,this.groupId).then(response=>{
+                    if(response.data.code===200){
+                      this.handleReset('formValidate')
+                      this.$Message.success('用户添加成功!');
+                    }
+                  })
+                }
+              })
+            })
           } else if (this.base64File == null) {
             this.$Message.error('请选择人脸照片！');
           } else {
@@ -78,17 +113,24 @@
       },
       handleReset(name) {
         this.$refs[name].resetFields();
-        this.imgUrl=''
+        this.imgUrl = ''
       },
       handlePreview(file) {
-        this.base64File = file //需要传给后台的file文件
         const reader = new FileReader()
         reader.readAsDataURL(file)
         reader.onload = () => {
           const _base64 = reader.result
           this.imgUrl = _base64 //将_base64赋值给图片的src，实现图片预览
+          this.base64File = _base64.replace(/^data:image\/.*;base64,/, '')
         }
         return false//阻止图片继续上传，使得form表单提交时统一上传
+      },
+      getTitle(){
+        if(this.groupId==='fixer'){
+          return "请输入维修人员信息"
+        }else{
+          return "请输入普通住户信息"
+        }
       }
     }
   }
@@ -99,5 +141,9 @@
   .upload {
     padding: 20px 0;
     margin-left: 35px;
+  }
+
+  .previewImg {
+    width: 250px;
   }
 </style>

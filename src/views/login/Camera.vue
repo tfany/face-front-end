@@ -34,7 +34,7 @@
 </template>
 <script>
   import {faceSearch, faceVerify} from "../../api/baiduface";
-  import {getAccessToken} from "../../api/getToken";
+  import {getBaiduToken} from "../../api/getToken";
 
   export default {
     name: 'camera',
@@ -70,7 +70,7 @@
         }
 
       },
-      retry(){
+      retry() {
         this.$router.go(0)
       },
       // 调用摄像头
@@ -84,7 +84,9 @@
             that.MediaStreamTrack = typeof stream.stop === 'function' ? stream : stream.getTracks()[0]
             that.video.srcObject = stream
             that.video.play()
+            let tryTimes = 0;
             let interval = setInterval(function () {
+              tryTimes++;
               let res;
               let groupId = null;
               if (that.identity === "普通用户") {
@@ -95,9 +97,9 @@
                 groupId = 'manager';
               }
               res = that.takePhone()
-              console.log("用户身份"+groupId)
+              console.log("用户身份" + groupId)
               if (res != null) {
-                getAccessToken().then(baiduToken => {
+                getBaiduToken().then(baiduToken => {
                   faceVerify(res, baiduToken.data.data).then(liveness => {
                     console.log("活体检测")
                     console.log(liveness.data)
@@ -108,20 +110,17 @@
                     } else if (liveness.data.error_code === 0) {
                       //验证人脸数据
                       faceSearch(res, groupId, baiduToken.data.data).then(response => {
-                        if(response.data.error_code===0){
+                        if (response.data.error_code === 0) {
                           clearInterval(interval)
                           that.closeCamera();
-                          that.$router.push({
-                            path:'/manager'
-                          })
+                          if (that.$route.params.path !== 'manager') {
+                            //设置一分钟的过期时间
+                            this.$cookies.set("info", response.data.result.user_list[0], 10)
+                            that.$router.push({
+                              path: '/manager'
+                            })
+                          }
                         }
-                        else{
-                          that.rel=true
-                          that.aMessage="身份验证失败,请重试"
-                          clearInterval(interval)
-                        }
-                        console.log("人脸验证")
-                        console.log(response.data)
                       })
                     }
                   })
@@ -129,7 +128,12 @@
                 })
 
               }
-            }, 1000)
+              that.rel = true
+              that.aMessage = "身份验证失败,请重试"
+              if (tryTimes === 5){
+                clearInterval(interval)
+              }
+            }, 1500)
           }).catch(function (err) {
             console.log(err)
           })
@@ -144,14 +148,8 @@
         return dataurl.replace('data:image/jpeg;base64,', '')
       },
       // 关闭摄像头
-      closeCamera () {
-        if (!this.video.srcObject) return
-        console.log("close video")
-        let stream = this.video.srcObject
-        let tracks = stream.getTracks()
-        tracks.forEach(track => {
-          track.stop()
-        })
+      closeCamera() {
+        this.MediaStreamTrack.stop()
         this.video.srcObject = null
       }
 
@@ -248,7 +246,7 @@
   }
 
   .content .cameraBox {
-     /*flex: 1;*/
+    /*flex: 1;*/
     display: inline-block;
     border: 1px solid gray;
     margin: auto;
