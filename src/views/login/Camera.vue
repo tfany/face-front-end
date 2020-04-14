@@ -37,6 +37,7 @@
   import {getBaiduToken} from "../../api/getToken";
   import {setCookie} from "../../utils/support";
   import {GetChinese} from "../../utils/common";
+  import {imitationData} from "../../api/powerDetail";
 
   export default {
     name: 'camera',
@@ -123,6 +124,7 @@
                               setCookie("userId",userId,15)
                               setCookie("username",GetChinese(list.user_info),15)
                               if(list.group_id==='customer'){
+                                imitationData(userId)
                                 that.$router.push({path: '/customer'})
                               }else if(list.group_id==='manager'){
                                 that.$router.push({path: '/manager'})
@@ -197,6 +199,7 @@
     height: 26px;
     margin: auto;
     background: aliceblue;
+    text-align: center;
   }
 
   .user-title {

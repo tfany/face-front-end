@@ -8,6 +8,7 @@
   import {deleteUser as myDelete, getList} from "../../api/user";
   import {getBaiduToken} from "../../api/getToken";
   import {deleteUser} from "../../api/baiduface";
+  import {formatDate} from "../../utils/common";
 
   export default {
     props: {
@@ -31,7 +32,12 @@
           },
           {
             title: '创建时间',
-            key: 'createTime'
+            key: 'createTime',
+            render: (h, params) => {
+              return h('div',
+                formatDate(new Date(params.row.createTime), 'yyyy-MM-dd HH-mm')
+              )
+            }
           },
           {
             title: '操作',

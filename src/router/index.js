@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Camera from "../views/login/Camera";
 import Home from "../views/manager/Home";
 import CustomerHome from "../views/Customer/Home";
+import Fixer from "../views/fixer/Fixer";
 
 Vue.use(Router)
 
@@ -22,6 +23,11 @@ export default new Router({
       path: '/customer',
       name: 'customer',
       component: CustomerHome
+    },
+    {
+      path: '/fixer',
+      name: 'fixer',
+      component: Fixer
     }
   ]
 })
