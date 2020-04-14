@@ -35,6 +35,8 @@
 <script>
   import {faceSearch, faceVerify} from "../../api/baiduface";
   import {getBaiduToken} from "../../api/getToken";
+  import {setCookie} from "../../utils/support";
+  import {GetChinese} from "../../utils/common";
 
   export default {
     name: 'camera',
@@ -110,14 +112,23 @@
                     } else if (liveness.data.error_code === 0) {
                       //验证人脸数据
                       faceSearch(res, groupId, baiduToken.data.data).then(response => {
-                        if (response.data.error_code === 0) {
+                        let data=response.data
+                        let list=data.result.user_list[0]
+                        let userId=list.user_id
+                        if (data.error_code === 0) {
                           clearInterval(interval)
                           that.closeCamera();
-                          if (that.$route.params.path !== 'manager') {
-                            //设置一分钟的过期时间
-                            this.$cookies.set("info", response.data.result.user_list[0], 10)
-                            that.$router.push({
-                              path: '/manager'
+                          if (that.$route.params.path === undefined) {
+                            that.$store.dispatch('Login', userId).then(() => {
+                              setCookie("userId",userId,15)
+                              setCookie("username",GetChinese(list.user_info),15)
+                              if(list.group_id==='customer'){
+                                that.$router.push({path: '/customer'})
+                              }else if(list.group_id==='manager'){
+                                that.$router.push({path: '/manager'})
+                              }else if(list.group_id==='fixer'){
+                                that.$router.push({path: '/fixer'})
+                              }
                             })
                           }
                         }
@@ -128,8 +139,10 @@
                 })
 
               }
-              that.rel = true
-              that.aMessage = "身份验证失败,请重试"
+              else {
+                that.rel = true
+                that.aMessage = "身份验证失败,请重试"
+              }
               if (tryTimes === 5){
                 clearInterval(interval)
               }

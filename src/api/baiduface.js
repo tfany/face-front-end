@@ -44,4 +44,17 @@ export function faceAdd(faceData, baiduToken,groupId,userId,userInfo) {
   })
 }
 
+//删除用户
+
+export function deleteUser(baiduToken,groupId,userId) {
+  return baiduServer({
+    url:'/faceset/user/delete?access_token='+baiduToken,
+    method:'post',
+    data:{
+      group_id: groupId,
+      user_id: userId
+    }
+  })
+}
+
 

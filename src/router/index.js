@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Camera from "../views/login/Camera";
 import Home from "../views/manager/Home";
+import CustomerHome from "../views/Customer/Home";
 
 Vue.use(Router)
 
@@ -16,6 +17,11 @@ export default new Router({
       path: '/manager',
       name: 'manager',
       component: Home
+    },
+    {
+      path: '/customer',
+      name: 'customer',
+      component: CustomerHome
     }
   ]
 })

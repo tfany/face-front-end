@@ -22,10 +22,10 @@
         </Menu>
       </Col>
       <Col span="20">
-        <AddUser :groupId="groupId" v-show="flags[0]"></AddUser>
-        <DeleteUser :groupId="groupId" v-show="flags[1]"></DeleteUser>
-        <AddUser :groupId="groupId" v-show="flags[2]"></AddUser>
-        <DeleteUser :groupId="groupId" v-show="flags[3]"></DeleteUser>
+        <AddUser :groupId="groupId" v-if="flags[0]"></AddUser>
+        <DeleteUser :groupId="groupId" v-if="flags[1]"></DeleteUser>
+        <AddUser :groupId="groupId" v-if="flags[2]"></AddUser>
+        <DeleteUser :groupId="groupId" v-if="flags[3]"></DeleteUser>
       </Col>
     </Row>
   </div>
