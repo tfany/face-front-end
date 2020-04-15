@@ -11,28 +11,14 @@
             <Icon type="ios-people"/>
             查看用户
           </MenuItem>
-          <Submenu name="3">
-            <template slot="title">
-              <Icon type="ios-stats"/>
-              统计分析
-            </template>
-            <MenuGroup title="使用">
-              <MenuItem name="3-1">新增和启动</MenuItem>
-              <MenuItem name="3-2">活跃分析</MenuItem>
-              <MenuItem name="3-3">时段分析</MenuItem>
-            </MenuGroup>
-            <MenuGroup title="留存">
-              <MenuItem name="3-4">用户留存</MenuItem>
-              <MenuItem name="3-5">流失用户</MenuItem>
-            </MenuGroup>
-          </Submenu>
-          <MenuItem name="4">
+          <MenuItem name="3">
             <Icon type="ios-construct"/>
             异常处理
           </MenuItem>
         </Menu>
-        <BoxSwitch v-if="flags[0]"></BoxSwitch>
+        <BoxSwitch :errorCount="errorCount" v-if="flags[0]"></BoxSwitch>
         <UserManager v-if="flags[1]"></UserManager>
+        <ErrorDetail :errorList="errorList" v-if="flags[2]"></ErrorDetail>
       </Col>
     </Row>
 
@@ -42,24 +28,32 @@
 <script>
   import BoxSwitch from "./BoxSwitch";
   import UserManager from "./UserManager";
+  import ErrorDetail from "./ErrorDetail";
+  import {queryFixBadRecord} from "../../api/bad";
   export default {
-    name: "fixer",
-    components: {UserManager, BoxSwitch},
+    name: "Fixer",
+    components: {ErrorDetail, UserManager, BoxSwitch},
     data(){
       return{
-        flags: [true,false,false,false]
+        flags: [true,false,false],
+        errorList: [],
+        errorCount: 0
       }
+    },
+    created() {
+      queryFixBadRecord().then(res=>{
+        this.errorList=res.data.data
+        this.errorCount=this.errorList.length
+      })
     },
     methods:{
       selectOne(name){
         if(name==='1'){
-          this.flags=[true,false,false,false]
+          this.flags=[true,false,false]
         }else if(name==='2'){
-          this.flags=[false,true,false,false]
+          this.flags=[false,true,false]
         }else if(name==='3'){
-          this.flags=[false,false,true,false]
-        }else if(name==='4'){
-          this.flags=[false,false,false,true]
+          this.flags=[false,false,true]
         }
       }
     }

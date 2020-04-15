@@ -16,6 +16,7 @@
     props:{
       userIdFromFather:String
     },
+    name: 'CustomerPower',
     data() {
       return {
         username: '',

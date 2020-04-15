@@ -1,13 +1,20 @@
 <template>
   <div>
-    <Table v-if="!showDetail" border :columns="columns" :data="userList"></Table>
-    <CustomerPower v-if="showDetail" :user-id-from-father="rowUserId"></CustomerPower>
+    <Table v-if="!showDetail" border :columns="columns" :data="customerList"></Table>
+    <div style="background:#eee;padding: 20px" v-if="showDetail">
+      <Card :bordered="false">
+        <Button @click="lastFloor">点我返回上一层</Button>
+        <p class="t1">您查看的用户是<b>{{customerName}}</b>，用电详情如下</p>
+        <CustomerPower :user-id-from-father="rowUserId"></CustomerPower>
+      </Card>
+    </div>
   </div>
 </template>
 
 <script>
   import {getList} from "../../api/user";
   import CustomerPower from "../customer/CustomerPower";
+  import {imitationData} from "../../api/powerDetail";
 
   export default {
     components: {CustomerPower},
@@ -44,7 +51,7 @@
                   },
                   on: {
                     click: () => {
-                      this.lookOver(this.userList[params.index].id)
+                      this.lookOver(this.customerList[params.index])
                     }
                   }
                 }, '查看')
@@ -54,26 +61,35 @@
         ],
         rowUserId:'',
         showDetail: false,
-        userDetailList:[],
-        userList: []
+        customerList: [],
+        customerName: ''
       }
     },
     created() {
       if(this.groupId!==''){
         getList(0,100,'customer').then(res=>{
-          this.userList=res.data.data;
+          this.customerList=res.data.data;
         })
       }
     },
     methods: {
-      lookOver(userId){
-        this.showDetail=true;
-        this.rowUserId=userId
+      lookOver(customer){
+        this.showDetail=true
+        this.rowUserId=customer.id
+        imitationData(this.rowUserId)
+        this.customerName=customer.name
+      },
+      lastFloor(){
+        this.showDetail=false;
       }
     }
   }
 </script>
 
 <style scoped>
-
+  .t1 {
+    text-align: center;
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
 </style>

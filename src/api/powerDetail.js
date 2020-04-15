@@ -7,7 +7,7 @@ import {service} from "../utils/request";
  */
 export  function imitationData(userId) {
   return service({
-    url: "getCurrentMonth",
+    url: "/imitationData",
     method: 'post',
     params: {
       userId,
@@ -23,7 +23,7 @@ export  function imitationData(userId) {
  */
 export function getCurrentMonth(userId){
   return service({
-    url: "getCurrentMonth",
+    url: "/getCurrentMonth",
     method: 'get',
     params: {
       userId,
@@ -34,7 +34,7 @@ export function getCurrentMonth(userId){
 
 export function getHistory(userId) {
   return service({
-    url: 'getHistory',
+    url: '/getHistory',
     method: 'get',
     params:{
       userId,

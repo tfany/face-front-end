@@ -96,3 +96,36 @@ export function deleteUser(id) {
   })
 }
 
+/**
+ * 故障报修
+ * @param customerId 用户id
+ * @param badType 错误类型
+ * @param customerTalk 用户留言
+ * @returns {AxiosPromise}
+ */
+export function tellNewBad(customerId, badType, customerTalk) {
+  return service({
+    url: '/tellNewBad',
+    method: 'post',
+    data:{
+      customerId,
+      badType,
+      customerTalk
+    }
+  })
+}
+
+/**
+ * 获取用户维修历史
+ * @param customerId id
+ * @returns {AxiosPromise}
+ */
+export function queryTellBadRecord(customerId){
+  return service({
+    url: '/queryTellBadRecord',
+    method: 'get',
+    params:{
+      customerId
+    }
+  })
+}

@@ -1,9 +1,6 @@
 import axios from 'axios'
 import store from '../store'
 import {getToken} from "./auth";
-import {getBaiduToken} from "../api/getToken";
-import {deleteUser} from "../api/baiduface";
-import {deleteUser as myDelete} from "../api/user";
 // 创建axios实例
 const service = axios.create({
   baseURL: process.env.BASE_API, // api的base_url
@@ -19,7 +16,6 @@ service.interceptors.request.use(config => {
 }, error => {
   // Do something with request error
   console.log(error) // for debug
-  Promise.reject(error)
 })
 
 // respone拦截器
@@ -30,26 +26,10 @@ service.interceptors.response.use(
      */
     const res = response.data
     if (res.code !== 200) {
-      this.$Modal.confirm({
-        content: '<p>用户身份过期，请重新登录</p>',
-        onOk: () => {
-          this.$router.push({
-              path: "/"
-            }
-          )
-        }
-      });
+
     } else {
       return response
     }
-  },
-  error => {
-    console.log('err' + error)// for debug
-    this.$Modal.error({
-      title: 'error',
-      content: 'error'
-    })
-    return Promise.reject(error)
   }
 )
 

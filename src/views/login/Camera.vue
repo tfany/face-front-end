@@ -208,6 +208,7 @@
     font-size: 30px;
     color: #130435;
     margin-bottom: 150px;
+    text-align: center;
   }
 
   .next {

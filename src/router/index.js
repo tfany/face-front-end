@@ -2,11 +2,15 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Camera from "../views/login/Camera";
 import Home from "../views/manager/Home";
-import CustomerHome from "../views/Customer/Home";
 import Fixer from "../views/fixer/Fixer";
+import Customer from "../views/customer/Customer";
 
 Vue.use(Router)
 
+const routerPush = Router.prototype.push
+Router.prototype.push = function push(location) {
+  return routerPush.call(this, location).catch(error=> error)
+}
 export default new Router({
   routes: [
     {
@@ -22,7 +26,7 @@ export default new Router({
     {
       path: '/customer',
       name: 'customer',
-      component: CustomerHome
+      component: Customer
     },
     {
       path: '/fixer',
