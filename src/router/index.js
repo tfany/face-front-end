@@ -21,16 +21,25 @@ export default new Router({
     {
       path: '/manager',
       name: 'manager',
+      meta: {
+        roles: ['manager']
+      },
       component: Home
     },
     {
       path: '/customer',
       name: 'customer',
+      meta: {
+        roles: ['customer']
+      },
       component: Customer
     },
     {
       path: '/fixer',
       name: 'fixer',
+      meta: {
+        roles: ['fixer']
+      },
       component: Fixer
     }
   ]

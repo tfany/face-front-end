@@ -16,17 +16,6 @@ export function login(userId) {
 
 }
 
-/**
- * 退出登录
- * @returns {AxiosPromise}
- */
-export function logout() {
-  return service({
-    url: '/loginOut',
-    method: 'post'
-  })
-}
-
 
 /**
  * 添加用户
@@ -44,8 +33,6 @@ export function addUser(id, name, phone, permissions) {
       id,
       name,
       phone,
-      createTime: new Date(),
-      updateTime: new Date(),
       permissions,
     }
   })
@@ -59,6 +46,16 @@ export function getInfo() {
   return request({
     url: '/info',
     method: 'get',
+  })
+}
+
+export function findUserById(userId) {
+  return service({
+    url: 'findUserById',
+    method: 'get',
+    params:{
+      userId
+    }
   })
 }
 

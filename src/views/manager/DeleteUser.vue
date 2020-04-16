@@ -33,11 +33,6 @@
           {
             title: '创建时间',
             key: 'createTime',
-            render: (h, params) => {
-              return h('div',
-                formatDate(new Date(params.row.createTime), 'yyyy-MM-dd HH-mm')
-              )
-            }
           },
           {
             title: '操作',
@@ -86,7 +81,6 @@
             getBaiduToken().then(response=>{
               let baiduToken=response.data.data
               let userId=this.userList[index].id;
-              console.log(userId)
               deleteUser(baiduToken,this.groupId,userId).then(response=>{
                   if(response.data.error_code===0){
                     myDelete(userId).then(response=>{

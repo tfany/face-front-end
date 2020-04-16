@@ -1,6 +1,8 @@
 import axios from 'axios'
 import store from '../store'
 import {getToken} from "./auth";
+import {Message} from "view-design";
+import router from '../router'
 // 创建axios实例
 const service = axios.create({
   baseURL: process.env.BASE_API, // api的base_url
@@ -15,10 +17,9 @@ service.interceptors.request.use(config => {
   return config
 }, error => {
   // Do something with request error
-  console.log(error) // for debug
+  //console.log(error) // for debug
 })
 
-// respone拦截器
 service.interceptors.response.use(
   response => {
     /**
@@ -26,12 +27,21 @@ service.interceptors.response.use(
      */
     const res = response.data
     if (res.code !== 200) {
-
+      Message.error('error')
+      return Promise.reject('error')
     } else {
       return response
     }
+  },
+  error => {
+    Message.error('用户身份过期，请重新登录')
+    router.push({
+      path: '/'
+    })
+    return Promise.reject(error)
   }
 )
+
 
 const baiduServer = axios.create({
   baseURL: process.env.BAIDU_API, // api的base_url

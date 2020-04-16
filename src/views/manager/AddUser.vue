@@ -78,7 +78,6 @@
         this.$refs[name].validate((valid) => {
           if (valid && this.base64File != null) {
             getBaiduToken().then(baiduToken => {
-              console.log("userInfo")
               let uid = getUserId();
               //百度云人脸注册
               faceAdd(this.base64File,

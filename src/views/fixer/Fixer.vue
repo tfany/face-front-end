@@ -15,10 +15,17 @@
             <Icon type="ios-construct"/>
             异常处理
           </MenuItem>
+          <Submenu name="4">
+            <template slot="title">
+              <Icon type="ios-log-out" />
+              其他
+            </template>
+            <MenuItem name="4-1">退出登录</MenuItem>
+          </Submenu>
         </Menu>
         <BoxSwitch :errorCount="errorCount" v-if="flags[0]"></BoxSwitch>
         <UserManager v-if="flags[1]"></UserManager>
-        <ErrorDetail :errorList="errorList" v-if="flags[2]"></ErrorDetail>
+        <ErrorDetail :errorList.sync="errorList" v-if="flags[2]"></ErrorDetail>
       </Col>
     </Row>
 
@@ -40,20 +47,41 @@
         errorCount: 0
       }
     },
+    watch:{
+      errorList(){
+        this.errorCount=0;
+        this.errorList.map(item=>{
+          if(item.fixResult!==1){
+            this.errorCount++;
+          }
+        })
+      }
+    },
     created() {
       queryFixBadRecord().then(res=>{
         this.errorList=res.data.data
-        this.errorCount=this.errorList.length
+        this.errorList.map(item=>{
+          if(item.fixResult!==1){
+            this.errorCount++;
+          }
+        })
       })
     },
     methods:{
       selectOne(name){
+        console.log(name)
         if(name==='1'){
           this.flags=[true,false,false]
         }else if(name==='2'){
           this.flags=[false,true,false]
         }else if(name==='3'){
           this.flags=[false,false,true]
+        }else if(name==='4-1'){
+          this.$store.dispatch('FedLogOut').then(()=>{
+            this.$router.push({
+              path: '/'
+            })
+          })
         }
       }
     }

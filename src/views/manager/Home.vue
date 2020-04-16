@@ -19,6 +19,14 @@
             <MenuItem name="2-1">新增维修人员</MenuItem>
             <MenuItem name="2-2">删除维修人员</MenuItem>
           </Submenu>
+
+          <Submenu name="4">
+            <template slot="title">
+              <Icon type="ios-log-out" />
+              其他
+            </template>
+            <MenuItem name="4-1">退出登录</MenuItem>
+          </Submenu>
         </Menu>
       </Col>
       <Col span="20">
@@ -59,6 +67,12 @@
         }else if(name==='2-2'){
           this.groupId="fixer"
           this.flags=[false,false,false,true]
+        } else {
+          this.$store.dispatch('FedLogOut').then(()=>{
+            this.$router.push({
+              path: '/'
+            })
+          })
         }
       }
     }

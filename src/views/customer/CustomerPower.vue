@@ -70,14 +70,12 @@
       else{
         this.userId = getCookie('userId')
       }
-      console.log(this.userId)
       this.getCurrent(this.userId)
     },
     methods: {
       getAllList() {
         this.showMore = false;
         getHistory(this.userId).then(res => {
-          console.log(res.data.data)
           this.dataList.push(...res.data.data)
         })
       },

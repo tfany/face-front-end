@@ -5,6 +5,7 @@
         <Card :bordered="false">
           <Button @click="tellBad">故障报修</Button>
           <Button @click="badHistory">报修历史</Button>
+          <Button @click="logout">退出登录</Button>
           <p class="t1">欢迎您<b>{{username}}</b>，您的用电详情如下</p>
           <CustomerPower></CustomerPower>
         </Card>
@@ -43,6 +44,7 @@
   import {getCookie} from "../../utils/support";
   import {formatDate} from "../../utils/common";
   import {queryTellBadRecord, tellNewBad} from "../../api/user";
+  import {removeToken} from "../../utils/auth";
 
   export default {
     name: "Customer",
@@ -133,6 +135,14 @@
        */
       tellBad() {
         this.bad = true;
+      },
+      logout(){
+        this.$store.dispatch('FedLogOut').then(()=>{
+          this.$router.push({
+            path: '/'
+          })
+        })
+
       },
       badHistory() {
         this.showHistory = true;

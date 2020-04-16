@@ -100,12 +100,9 @@
                 groupId = 'manager';
               }
               res = that.takePhone()
-              console.log("用户身份" + groupId)
               if (res != null) {
                 getBaiduToken().then(baiduToken => {
                   faceVerify(res, baiduToken.data.data).then(liveness => {
-                    console.log("活体检测")
-                    console.log(liveness.data)
                     if (liveness.data.error_code === 222202) { //是否包含人脸
                       that.aMessage = "未检测到人脸,请将人脸移入圆圈内"
                     } else if (liveness.data.result.face_liveness < 0.7) { //活体检测
@@ -121,8 +118,9 @@
                           that.closeCamera();
                           if (that.$route.params.path === undefined) {
                             that.$store.dispatch('Login', userId).then(() => {
-                              setCookie("userId",userId,15)
-                              setCookie("username",GetChinese(list.user_info),15)
+                              setCookie("userId",userId,5)
+                              setCookie("username",GetChinese(list.user_info),5)
+                              setCookie("groupId",list.group_id,5)
                               if(list.group_id==='customer'){
                                 imitationData(userId)
                                 that.$router.push({path: '/customer'})
@@ -149,8 +147,6 @@
                 clearInterval(interval)
               }
             }, 1500)
-          }).catch(function (err) {
-            console.log(err)
           })
         }
       },
